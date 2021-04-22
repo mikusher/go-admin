@@ -19,9 +19,14 @@ func Setup(app *fiber.App) {
 	app.Post("/api/logout", controllers.Logout)
 
 	//CRUD
-	// get all users
+	// getAll users
 	app.Get("/api/users", controllers.AllUsers)
-
 	//create user
 	app.Post("/api/users", controllers.CreateUser)
+	//get user by Id
+	app.Get("/api/users/:id", controllers.GetUser)
+	//update user by Id
+	app.Put("/api/users/:id", controllers.UpdateUser)
+	//delete user by Id
+	app.Delete("/api/users/:id", controllers.DeleteUser)
 }
