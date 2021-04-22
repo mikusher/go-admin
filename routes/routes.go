@@ -17,4 +17,11 @@ func Setup(app *fiber.App) {
 	//private router need middleware
 	app.Get("/api/user", controllers.User)
 	app.Post("/api/logout", controllers.Logout)
+
+	//CRUD
+	// get all users
+	app.Get("/api/users", controllers.AllUsers)
+
+	//create user
+	app.Post("/api/users", controllers.CreateUser)
 }

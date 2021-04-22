@@ -29,8 +29,9 @@ func Register(c *fiber.Ctx) error {
 		FirstName: data["first_name"],
 		LastName:  data["last_name"],
 		Email:     data["email"],
-		Password:  hashedPassword,
 	}
+
+	user.SetPassword(string(hashedPassword))
 
 	//save on database
 	database.DB.Create(&user)
