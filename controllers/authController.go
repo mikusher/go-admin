@@ -59,6 +59,7 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	if utils.CheckPasswordHash(data["password"], string(user.Password)) {
+		//generate jwt
 		claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
 			Issuer:    strconv.Itoa(int(user.Id)),
 			ExpiresAt: time.Now().Add(time.Hour * 24).Unix(), // expire in 1 Day
@@ -67,7 +68,20 @@ func Login(c *fiber.Ctx) error {
 		if err != nil {
 			return c.SendStatus(fiber.StatusInternalServerError)
 		}
-		return c.JSON(token)
+		//add jwd in cookie
+		cookie := fiber.Cookie{
+			Name:     "jwt",
+			Value:    token,
+			Expires:  time.Now().Add(time.Hour * 24),
+			HTTPOnly: true,
+		}
+		c.Cookie(&cookie)
+
+		//send jwt token
+		return c.JSON(fiber.Map{
+			"message": "success",
+		})
+
 	} else {
 		c.Status(400)
 		return c.JSON(fiber.Map{
