@@ -75,9 +75,9 @@ func Login(c *fiber.Ctx) error {
 			Expires:  time.Now().Add(time.Hour * 24),
 			HTTPOnly: true,
 		}
+		//send token
 		c.Cookie(&cookie)
 
-		//send jwt token
 		return c.JSON(fiber.Map{
 			"message": "success",
 		})
@@ -88,5 +88,48 @@ func Login(c *fiber.Ctx) error {
 			"message": "Incorrect Password",
 		})
 	}
+
+}
+
+type Claims struct {
+	jwt.StandardClaims
+}
+
+func User(c *fiber.Ctx) error {
+	cookie := c.Cookies("jwt")
+
+	token, err := jwt.ParseWithClaims(cookie, &Claims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte("secret"), nil
+	})
+
+	if err != nil || !token.Valid {
+		c.Status(fiber.StatusUnauthorized)
+		return c.JSON(fiber.Map{
+			"message": "unauthenticated",
+		})
+	}
+
+	//force cast claims, to get Issuer .(*Claims)
+	claims := token.Claims.(*Claims)
+	var user models.User
+
+	database.DB.Where("id = ?", claims.Issuer).First(&user)
+
+	return c.JSON(user)
+}
+
+func Logout(c *fiber.Ctx) error {
+	// do you don't have a way to remove a cookie, basically is just put time in the past, and value empty.
+	cookie := fiber.Cookie{
+		Name:     "jwt",
+		Value:    "",
+		Expires:  time.Now().Add(-time.Hour),
+		HTTPOnly: true,
+	}
+
+	c.Cookie(&cookie)
+	return c.JSON(fiber.Map{
+		"message": "success",
+	})
 
 }
