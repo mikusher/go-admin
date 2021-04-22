@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 	"go-admin/database"
 	"go-admin/models"
@@ -59,12 +58,10 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	if utils.CheckPasswordHash(data["password"], string(user.Password)) {
+
 		//generate jwt
-		claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
-			Issuer:    strconv.Itoa(int(user.Id)),
-			ExpiresAt: time.Now().Add(time.Hour * 24).Unix(), // expire in 1 Day
-		})
-		token, err := claims.SignedString([]byte("secret"))
+		token, err := utils.GenerateJwt(strconv.Itoa(int(user.Id)))
+
 		if err != nil {
 			return c.SendStatus(fiber.StatusInternalServerError)
 		}
@@ -91,29 +88,15 @@ func Login(c *fiber.Ctx) error {
 
 }
 
-type Claims struct {
-	jwt.StandardClaims
-}
-
 func User(c *fiber.Ctx) error {
 	cookie := c.Cookies("jwt")
 
-	token, err := jwt.ParseWithClaims(cookie, &Claims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte("secret"), nil
-	})
+	//parse jwt
+	id, _ := utils.ParseJwt(cookie)
 
-	if err != nil || !token.Valid {
-		c.Status(fiber.StatusUnauthorized)
-		return c.JSON(fiber.Map{
-			"message": "unauthenticated",
-		})
-	}
-
-	//force cast claims, to get Issuer .(*Claims)
-	claims := token.Claims.(*Claims)
 	var user models.User
 
-	database.DB.Where("id = ?", claims.Issuer).First(&user)
+	database.DB.Where("id = ?", id).First(&user)
 
 	return c.JSON(user)
 }
