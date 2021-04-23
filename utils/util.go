@@ -9,7 +9,7 @@ func HashPassword(password string) []byte {
 	if err != nil {
 		panic(err)
 	}
-	return []byte(bytes)
+	return bytes
 }
 
 func CheckPasswordHash(password, hash string) bool {

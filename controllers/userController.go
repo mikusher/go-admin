@@ -1,10 +1,12 @@
 package controllers
 
 import (
-	"github.com/gofiber/fiber/v2"
 	"go-admin/database"
 	"go-admin/models"
+	"go-admin/utils"
 	"strconv"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 func AllUsers(c *fiber.Ctx) error {
@@ -22,7 +24,8 @@ func CreateUser(c *fiber.Ctx) error {
 	}
 
 	//set a password for new user
-	user.SetPassword("12345")
+	hashPass := utils.HashPassword("12345")
+	user.SetPassword(hashPass)
 
 	//create a new user in the database
 	database.DB.Create(&user)

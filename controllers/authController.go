@@ -1,12 +1,13 @@
 package controllers
 
 import (
-	"github.com/gofiber/fiber/v2"
 	"go-admin/database"
 	"go-admin/models"
 	"go-admin/utils"
 	"strconv"
 	"time"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 func Register(c *fiber.Ctx) error {
@@ -31,7 +32,7 @@ func Register(c *fiber.Ctx) error {
 		Email:     data["email"],
 	}
 
-	user.SetPassword(string(hashedPassword))
+	user.SetPassword(hashedPassword)
 
 	//save on database
 	database.DB.Create(&user)
