@@ -24,7 +24,7 @@ func Register(c *fiber.Ctx) error {
 		})
 	}
 
-	hashedPassword := utils.HashAndSaltPassword(data["password"])
+	hash, _ := utils.HashPassword(data["password"])
 
 	user := models.User{
 		FirstName: data["first_name"],
@@ -32,7 +32,7 @@ func Register(c *fiber.Ctx) error {
 		Email:     data["email"],
 	}
 
-	user.SetPassword(hashedPassword)
+	user.SetPassword(hash)
 
 	//save on database
 	database.DB.Create(&user)
@@ -59,7 +59,7 @@ func Login(c *fiber.Ctx) error {
 		})
 	}
 
-	if utils.CheckPasswordHash(data["password"], user.Password) {
+	if utils.CheckPasswordHash(data["password"], string(user.Password)) {
 
 		//generate jwt
 		token, err := utils.GenerateJwt(strconv.Itoa(int(user.Id)))

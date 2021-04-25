@@ -1,27 +1,13 @@
 package utils
 
-import (
-	"log"
+import "golang.org/x/crypto/bcrypt"
 
-	"golang.org/x/crypto/bcrypt"
-)
-
-func HashAndSaltPassword(password string) []byte {
-	// generate password
-	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	if err != nil {
-		log.Println(err)
-	}
-	return hash
+func HashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	return string(bytes), err
 }
 
-func CheckPasswordHash(hashPass string, plainPwd []byte) bool {
-	byteHash := []byte(hashPass)
-
-	err := bcrypt.CompareHashAndPassword(byteHash, plainPwd)
-	if err != nil {
-		log.Println(err)
-		return false
-	}
-	return true
+func CheckPasswordHash(password, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
 }

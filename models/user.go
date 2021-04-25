@@ -16,12 +16,13 @@ func (user *User) SetStringPassword(password string) {
 	user.Password = hashPassword
 }
 
-// set hash password
+// SetHashPassword set hash password
 func (user *User) SetHashPassword(password []byte) {
 	hashPassword, _ := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
 	user.Password = hashPassword
 }
 
-func (user *User) SetPassword(password []byte) {
-	user.Password = password
+// SetPassword
+func (user *User) SetPassword(password string) {
+	user.Password = []byte(password)
 }
