@@ -24,7 +24,7 @@ func CreateUser(c *fiber.Ctx) error {
 	}
 
 	//set a password for new user
-	hashPass := utils.HashPassword("12345")
+	hashPass := utils.HashAndSaltPassword("12345")
 	user.SetPassword(hashPass)
 
 	//create a new user in the database

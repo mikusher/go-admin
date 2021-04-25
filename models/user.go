@@ -10,7 +10,18 @@ type User struct {
 	Password  []byte `json:"-"`
 }
 
-func (user *User) SetPassword(password []byte) {
+// set string password
+func (user *User) SetStringPassword(password string) {
+	hashPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	user.Password = hashPassword
+}
+
+// set hash password
+func (user *User) SetHashPassword(password []byte) {
 	hashPassword, _ := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
 	user.Password = hashPassword
+}
+
+func (user *User) SetPassword(password []byte) {
+	user.Password = password
 }
