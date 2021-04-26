@@ -29,4 +29,15 @@ func Setup(app *fiber.App) {
 	app.Put("/api/users/:id", controllers.UpdateUser)
 	//delete user by Id
 	app.Delete("/api/users/:id", controllers.DeleteUser)
+
+	// getAll users
+	app.Get("/api/roles", controllers.AllRoles)
+	//create user
+	app.Post("/api/roles", controllers.CreateRole)
+	//get user by Id
+	app.Get("/api/roles/:id", controllers.GetRole)
+	//update user by Id
+	app.Put("/api/roles/:id", controllers.UpdateRole)
+	//delete user by Id
+	app.Delete("/api/roles/:id", controllers.DeleteRole)
 }
