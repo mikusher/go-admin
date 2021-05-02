@@ -1,9 +1,10 @@
 package routes
 
 import (
-	"github.com/gofiber/fiber/v2"
 	"go-admin/controllers"
 	"go-admin/middlewares"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 func Setup(app *fiber.App) {
@@ -40,4 +41,7 @@ func Setup(app *fiber.App) {
 	app.Put("/api/roles/:id", controllers.UpdateRole)
 	//delete user by Id
 	app.Delete("/api/roles/:id", controllers.DeleteRole)
+
+	//permission
+	app.Get("/api/permissions", controllers.AllPermission)
 }

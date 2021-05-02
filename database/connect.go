@@ -2,6 +2,7 @@ package database
 
 import (
 	"go-admin/models"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -17,5 +18,5 @@ func Connect() {
 
 	DB = database
 
-	database.AutoMigrate(&models.User{}, &models.Role{})
+	database.AutoMigrate(&models.User{}, &models.Role{}, &models.Permission{})
 }
